@@ -98,13 +98,13 @@ byte lej[] = {
 };
 
 
-int wyswietl_ekran();                                                           //    -------------   F U N K C J E   --------------
+int wyswietl_ekran();                                                           //    -------------   F U N K C J E   ---------------
 void wyswietl_wybory(char*, char*, uint8_t, uint8_t);
 void zamaluj_wybor(char*, char*, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 int wybor(char*, char*, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 void wypisz_ekran_startowy();
 
-int zawor_otwarty();
+int zawor_otwarty();                                                            //    --------------   P O M I A R   ----------------
 int uwaga_otworzony_zawor();
 int zliczanie_czasu(typ_wynik*);
 int czy_zapisac(); 
@@ -112,7 +112,11 @@ void init_klawiatura(char*);
 int wpisz_nazwe(typ_wynik*);
 void zapisz(typ_wynik*);     // nie skończone
 
-void IRAM_ATTR ISR_OK();                                                        //    -----------   I N T E R R U P T S   -------------
+void wyswietl_ranking(uint8_t);                                                 //    -------------   R A N K I N G   ---------------
+int przesuwanie_nazwy(uint8_t);
+void ruch_rankingu(uint8_t*);
+
+void IRAM_ATTR ISR_OK();                                                        //    ----------   I N T E R R U P T S   ------------
 void IRAM_ATTR ISR_RIGHT();
 void IRAM_ATTR ISR_DOWN();
 void IRAM_ATTR ISR_LEFT();
