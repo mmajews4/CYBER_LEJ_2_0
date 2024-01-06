@@ -19,17 +19,21 @@ void loop() {
     }
     else                                          // ----------------------------------------------------------    P O M I A R    ----------------
     {
-      if(zawor_otwarty())             // Te if-y służą do wychodzenia do menu glownego
-        if(uwaga_otworzony_zawor()) break;// Informuje że lej nie jest gotowy do picia
+      if(zawor_otwarty())                         // Te if-y służą do wychodzenia do menu glownego
+        if(uwaga_otworzony_zawor()) break;        // Informuje że lej nie jest gotowy do picia
 
-      if(zliczanie_czasu()) break;        // Zliczenie czasu, z możliwością wyjścia przed otwarciem zaworu
+      typ_wynik temp_wynik;                       // Struct który do czasu zapisu potrzyma w sobie wyniki
+      if(zliczanie_czasu(&temp_wynik)) break;     // Zliczenie czasu, z możliwością wyjścia przed otwarciem zaworu
 
-      while(!ok_flag && !esc_flag){       // Wyświetlaj wynik dopóki urzytkownik czegoś nie zrobi
+      while(!ok_flag && !esc_flag){               // Wyświetlaj wynik dopóki urzytkownik czegoś nie zrobi  
+        Serial.println("Czekam z wyswiwtlonym wynikiem");
       }  
+      if(czy_zapisac()) break;                    // 1 jeżeli nie chcemy zapisać, wykona się tylko po nacisniecuy ESC
 
-      if(czy_zapisac()) break;            // 1 jeżeli nie chcemy zapisać
-
-      zapisz();
+      if(wpisz_nazwe(&temp_wynik)) break;
+      
+      zapisz(&temp_wynik);
+      
       
     }
   }

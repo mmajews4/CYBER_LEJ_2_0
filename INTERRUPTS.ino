@@ -3,7 +3,7 @@ unsigned long last_button_time = 0;
 
 void IRAM_ATTR ISR_OK() {                 // Interrupt service rutine
   button_time = millis();                 // Ochrona przed tzw. button debounce
-  if (button_time - last_button_time > 250)
+  if (button_time - last_button_time > 150)
   {
     ok_flag = 1;
     last_button_time = button_time;
@@ -11,7 +11,7 @@ void IRAM_ATTR ISR_OK() {                 // Interrupt service rutine
 }
 void IRAM_ATTR ISR_RIGHT() {
   button_time = millis();
-  if (button_time - last_button_time > 250)
+  if (button_time - last_button_time > 150)
   {
     right_flag = 1;
     last_button_time = button_time;
@@ -19,7 +19,7 @@ void IRAM_ATTR ISR_RIGHT() {
 }
 void IRAM_ATTR ISR_DOWN() {
   button_time = millis();
-  if (button_time - last_button_time > 250)
+  if (button_time - last_button_time > 150)
   {
     down_flag = 1;
     last_button_time = button_time;
@@ -27,7 +27,7 @@ void IRAM_ATTR ISR_DOWN() {
 }
 void IRAM_ATTR ISR_LEFT() {
   button_time = millis();
-  if (button_time - last_button_time > 250)
+  if (button_time - last_button_time > 150)
   {
     left_flag = 1;
     last_button_time = button_time;
@@ -35,7 +35,7 @@ void IRAM_ATTR ISR_LEFT() {
 }
 void IRAM_ATTR ISR_UP() {
   button_time = millis();
-  if (button_time - last_button_time > 250)
+  if (button_time - last_button_time > 150)
   {
     up_flag = 1;
     last_button_time = button_time;
@@ -43,7 +43,7 @@ void IRAM_ATTR ISR_UP() {
 }
 void IRAM_ATTR ISR_ESC() {
   button_time = millis();
-  if (button_time - last_button_time > 250)
+  if (button_time - last_button_time > 150)
   {
     esc_flag = 1;
     last_button_time = button_time;

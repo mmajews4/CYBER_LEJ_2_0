@@ -18,7 +18,7 @@ int uwaga_otworzony_zawor(){
   return 0;
 }
 
-int zliczanie_czasu(){
+int zliczanie_czasu(typ_wynik* temp_wynik){
 
   int currTime, prevTime;
   
@@ -41,9 +41,9 @@ int zliczanie_czasu(){
     while(zawor_otwarty())          //  -----   Wyswietlanie uplywajacego czasu
     {
       currTime = millis();
-      czas = (currTime - prevTime)/ 1000.0;
+      temp_wynik->czas = (currTime - prevTime)/ 1000.0;
       lcd.setCursor(6, 0);                                               
-      lcd.print(czas);
+      lcd.print(temp_wynik->czas);
     }
 
     for(int i = 0; i < 3; i++)          //  -----   Wyswietlenie wymiku (3 migniecia a potem na stałe)
@@ -64,13 +64,13 @@ int zliczanie_czasu(){
         if(esc_flag)                    // Obsluga esc
         {                               // Nie kasujemy esc_flagi bo później będzie komunikat
           lcd.setCursor(6, 0);
-          lcd.print(czas);              // Podczas wyjscia w trakcie migniecia trzeba wydrukować czas
+          lcd.print(temp_wynik->czas);              // Podczas wyjscia w trakcie migniecia trzeba wydrukować czas
           return 0;
         }
         currTime = millis();
       }
       lcd.setCursor(6, 0);
-      lcd.print(czas);
+      lcd.print(temp_wynik->czas);
     }                  
   }
   return 0;
@@ -104,6 +104,148 @@ int czy_zapisac(){
   }
 }
 
-int zapisz(){
+void init_klawiatura(char* co_wyswietlic){
+  lcd.setCursor(0, 0);                      
+  lcd.print(co_wyswietlic);
+  lcd.setCursor(0, 1); 
+  lcd.print(klawiatura[0]);
+  lcd.setCursor(13, 1);
+  lcd.write(1); 
+  lcd.setCursor(14, 1); 
+  lcd.write(2);
+  lcd.setCursor(15, 1); 
+  lcd.write(3);
+}
+
+int wpisz_nazwe(typ_wynik* temp_wynik){
+  
+  uint8_t indeks_nazwy = 0;                       
+  uint8_t rzad = 0, kolumna = 0, pop_kolumna = 1; // poprzednia pozycja w kolumnie
+  uint8_t specjalne = 0, pop_specjalne = 1;       // kolumna znakow specjalnych
+  uint8_t pierwsza_litera = 0;                    // pamiętanie 
+  temp_wynik->nazwa[0] = {'\0'};
+  temp_wynik->dlugosc_nazwy = 0;                  // pamiętanie która litera nazwy jest obeznie wpisywana
+
+  init_klawiatura("Twoje_Imie");
+
+  while(1){                                       // ----------------------------------------   Sterowanie klawiaturą   -----------------------
+          
+    if(down_flag){                   // W dół
+      down_flag = 0; 
+      rzad = 1;
+      lcd.setCursor(0, 1); 
+      lcd.print(klawiatura[rzad]);    
+    }    
+    if(up_flag){                     // W góre    
+      up_flag = 0;
+      rzad = 0;
+      lcd.setCursor(0, 1); 
+      lcd.print(klawiatura[rzad]);
+    }    
+    if(kolumna == 11 && specjalne < 3 && right_flag){   // W prawo po spocjalnych
+      right_flag = 0;
+      pop_specjalne = specjalne;
+      specjalne = specjalne + 1;
+    }
+    if(kolumna > 0 && specjalne == 0 && left_flag){     // W lewo
+      left_flag = 0;
+      pop_kolumna = kolumna;
+      kolumna = kolumna - 1;
+    }
+    if(kolumna < 11 && right_flag){                     // W prawo
+      right_flag = 0;
+      pop_kolumna = kolumna;
+      kolumna = kolumna + 1;
+    }
+    if(kolumna == 11 && specjalne > 0 && left_flag){    // W lewo po specjalnych
+      left_flag = 0;
+      pop_specjalne = specjalne;
+      specjalne = specjalne - 1;
+    }
+
+    if(specjalne == 0)                                  // -----------------------------------   Wyprintowanie zmiany znaku   -------------------
+    {
+      lcd.setCursor(pop_kolumna, 1); 
+      lcd.print(klawiatura[rzad][pop_kolumna]);
+      lcd.setCursor(kolumna, 1); 
+      lcd.write(0);
+      lcd.setCursor(13, 1); 
+      lcd.write(1);
+    } else {
+      lcd.setCursor(11, 1); 
+      lcd.print(klawiatura[rzad][11]);
+      lcd.setCursor(12 + pop_specjalne, 1); 
+      if(pop_specjalne != 0)
+        lcd.write(pop_specjalne);
+      lcd.setCursor(12 + specjalne, 1); 
+      lcd.write(0);
+    }
+
+    if(ok_flag){                                        // ----------------------------   Obsluga naciśnięcia danych przycisków   ----------------
+      ok_flag = 0;
+
+      if(specjalne == 0)                                // Wpisanie litery do nazwy
+      {
+        if(temp_wynik->dlugosc_nazwy < 20){
+          temp_wynik->nazwa[temp_wynik->dlugosc_nazwy] = klawiatura[rzad][kolumna];
+          temp_wynik->nazwa[temp_wynik->dlugosc_nazwy + 1] = '\0';
+          temp_wynik->dlugosc_nazwy = temp_wynik->dlugosc_nazwy + 1;
+        }
+        if(pierwsza_litera == 0 && (temp_wynik->nazwa[0] != '\0')){ // W przypadku naciśnięcia pierwszej litery, kasuje napis "Towje_Imie"
+            pierwsza_litera = 1;
+            lcd.setCursor(0, 0);                      
+            lcd.print("               ");
+        }
+        lcd.setCursor(0, 0);                      
+        lcd.print(temp_wynik->nazwa);        
+      } 
+      else if(specjalne == 1)                           // Caps lock
+      {
+        if(klawiatura[0][0] == 'a'){
+          for(int i = 0; i < 2; i++)
+            for(int j = 0; j < 12; j++)
+              klawiatura[i][j] = klawiatura_D[i][j];                        
+        } else {
+          for(int i = 0; i < 2; i++) 
+            for(int j = 0; j < 12; j++)
+              klawiatura[i][j] = klawiatura_m[i][j];
+        }
+        lcd.setCursor(0, 1); 
+        lcd.print(klawiatura[0]);
+      }
+      else if(specjalne == 2)                           // Backspace
+      {
+        if(temp_wynik->dlugosc_nazwy > 0){
+          temp_wynik->dlugosc_nazwy = temp_wynik->dlugosc_nazwy - 1; 
+          temp_wynik->nazwa[temp_wynik->dlugosc_nazwy] = '\0';                         
+        }
+        lcd.setCursor(temp_wynik->dlugosc_nazwy, 0);  
+        lcd.print(" ");       
+      }
+      else if(specjalne == 3)                           // Zapisz                                  
+      {
+        lcd.clear();
+        return 0;
+      }
+    }
+
+    if(esc_flag){               // Obsluga wyjścia
+      if(czy_zapisac()){        // Jeśli nie chcemy wyjsc, nie wyjdziemy z funkcji
+        lcd.clear();
+        return 1;
+      } else {
+        init_klawiatura(temp_wynik->nazwa); // Jako że wyczyściliśmy ekran trzeba znowy naryswoać klawiaturę
+      }
+    }
+  }
+}
+
+void zapisz(typ_wynik* temp_wynik){
   Serial.println("Zapisano");
+  Serial.print("Czas: ");
+  Serial.println(temp_wynik->czas);
+  Serial.print("Nazwa: ");
+  Serial.println(temp_wynik->nazwa);
+  Serial.print("Dlugosc nazwy: ");
+  Serial.println(temp_wynik->dlugosc_nazwy);
 }

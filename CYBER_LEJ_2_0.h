@@ -20,18 +20,27 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);         // Set the LCD address to 0x27 for a
 
 typedef struct{
   float czas;
-  char* nazwa;
-  int dlugosc_nazwy;
+  char nazwa[21];
+  uint8_t dlugosc_nazwy;
 } typ_wynik;
 
 uint8_t ok_flag = 0, right_flag = 0, down_flag = 0, left_flag = 0, up_flag = 0, esc_flag = 0; //Interrupty
-float czas = 0.0;
 
 char ekran[2][17] = {{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\0'},
                     {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\0'}};
 
 char prevEkran[2][17] = {{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\0'},
                          {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\0'}};
+
+char klawiatura[2][13] = {{'a','b','c','d','e','f','g','h','i','j','k','l','\0'},
+                          {'m','n','o','p','r','s','t','u','w','y','z','_','\0'}};
+                       
+char klawiatura_m[2][13] = {{'a','b','c','d','e','f','g','h','i','j','k','l','\0'},
+                            {'m','n','o','p','r','s','t','u','w','y','z','_','\0'}};
+
+char klawiatura_D[2][13] = {{'A','B','C','D','E','F','G','H','I','J','K','L','\0'},
+                            {'M','N','O','P','R','S','T','U','W','Y','Z','_','\0'}};
+
 
 byte miganie[] = {
   B11111,
@@ -97,9 +106,11 @@ void wypisz_ekran_startowy();
 
 int zawor_otwarty();
 int uwaga_otworzony_zawor();
-int zliczanie_czasu();
+int zliczanie_czasu(typ_wynik*);
 int czy_zapisac(); 
-int zapisz();     // nie skończone
+void init_klawiatura(char*);
+int wpisz_nazwe(typ_wynik*);
+void zapisz(typ_wynik*);     // nie skończone
 
 void IRAM_ATTR ISR_OK();                                                        //    -----------   I N T E R R U P T S   -------------
 void IRAM_ATTR ISR_RIGHT();
