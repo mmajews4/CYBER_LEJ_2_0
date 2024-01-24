@@ -124,7 +124,7 @@ int wpisz_nazwe(typ_wynik* temp_wynik){
   uint8_t specjalne = 0, pop_specjalne = 1;       // kolumna znakow specjalnych
   uint8_t pierwsza_litera = 0;                    // pamiętanie 
   temp_wynik->nazwa[0] = {'\0'};
-  temp_wynik->dlugosc_nazwy = 0;                  // pamiętanie która litera nazwy jest obeznie wpisywana
+  uint8_t dlugosc_nazwy = 0;                  // pamiętanie która litera nazwy jest obeznie wpisywana
 
   init_klawiatura("Twoje_Imie");
 
@@ -186,10 +186,10 @@ int wpisz_nazwe(typ_wynik* temp_wynik){
 
       if(specjalne == 0)                                // Wpisanie litery do nazwy
       {
-        if(temp_wynik->dlugosc_nazwy < 20){
-          temp_wynik->nazwa[temp_wynik->dlugosc_nazwy] = klawiatura[rzad][kolumna];
-          temp_wynik->nazwa[temp_wynik->dlugosc_nazwy + 1] = '\0';
-          temp_wynik->dlugosc_nazwy = temp_wynik->dlugosc_nazwy + 1;
+        if(dlugosc_nazwy < 20){
+          temp_wynik->nazwa[dlugosc_nazwy] = klawiatura[rzad][kolumna];
+          temp_wynik->nazwa[dlugosc_nazwy + 1] = '\0';
+          dlugosc_nazwy = dlugosc_nazwy + 1;
         }
         if(pierwsza_litera == 0 && (temp_wynik->nazwa[0] != '\0')){ // W przypadku naciśnięcia pierwszej litery, kasuje napis "Towje_Imie"
             pierwsza_litera = 1;
@@ -215,11 +215,11 @@ int wpisz_nazwe(typ_wynik* temp_wynik){
       }
       else if(specjalne == 2)                           // Backspace
       {
-        if(temp_wynik->dlugosc_nazwy > 0){
-          temp_wynik->dlugosc_nazwy = temp_wynik->dlugosc_nazwy - 1; 
-          temp_wynik->nazwa[temp_wynik->dlugosc_nazwy] = '\0';                         
+        if(dlugosc_nazwy > 0){
+          dlugosc_nazwy = dlugosc_nazwy - 1; 
+          temp_wynik->nazwa[dlugosc_nazwy] = '\0';                         
         }
-        lcd.setCursor(temp_wynik->dlugosc_nazwy, 0);  
+        lcd.setCursor(dlugosc_nazwy, 0);  
         lcd.print(" ");       
       }
       else if(specjalne == 3)                           // Zapisz                                  
@@ -241,11 +241,41 @@ int wpisz_nazwe(typ_wynik* temp_wynik){
 }
 
 void zapisz(typ_wynik* temp_wynik){
-  Serial.println("Zapisano");
+
+  uint16_t bufor, wstaw;
+  uint16_t ostatni_wynik = wyniki[0].czas + 1;
+
+  wyniki[ostatni_wynik].czas = temp_wynik->czas;
+  strcpy(wyniki[ostatni_wynik].nazwa, temp_wynik->nazwa);
+  wyniki[0].czas = ostatni_wynik ;
+
+  int i = 0;
+  while(temp_wynik->czas > wyniki[ranking_index[i]].czas){        // Dojście wyniku na swoje miejsce
+    i++;
+    Serial.println("3");
+  }
+  
+  Serial.println("4");
+
+  wstaw = ostatni_wynik;
+  while(wstaw != 0){
+    bufor = ranking_index[i];
+    ranking_index[i] = wstaw;
+    wstaw = ranking_index[i+1];
+    Serial.println(wstaw);
+    i++;
+  }
+
+
+
+
+
+
+  /*Serial.println("Zapisano");
   Serial.print("Czas: ");
   Serial.println(temp_wynik->czas);
   Serial.print("Nazwa: ");
   Serial.println(temp_wynik->nazwa);
   Serial.print("Dlugosc nazwy: ");
-  Serial.println(temp_wynik->dlugosc_nazwy);
+  Serial.println(temp_wynik->dlugosc_nazwy);*/
 }

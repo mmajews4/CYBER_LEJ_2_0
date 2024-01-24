@@ -15,6 +15,7 @@
 #define CZAS_MIGANIA 550
 #define HISTEREZA_MIGANIA 70
 #define CZAS_PRZES_RANK 200
+#define DLG_PRZES_NAZWY 8                   // Długość przesuwanej nazwy
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);         // Set the LCD address to 0x27 for a 16 chars and 2 line display
 //hw_timer_t *tim_cursor = NULL;
@@ -22,8 +23,9 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);         // Set the LCD address to 0x27 for a
 typedef struct{
   float czas;
   char nazwa[21];
-  uint8_t dlugosc_nazwy;
 } typ_wynik;
+
+uint16_t ranking_index[100] = {2,3,4,5,7,8,1,6};
 
 uint8_t ok_flag = 0, right_flag = 0, down_flag = 0, left_flag = 0, up_flag = 0, esc_flag = 0; //Interrupty
 

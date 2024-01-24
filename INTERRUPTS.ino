@@ -3,7 +3,7 @@ unsigned long last_button_time = 0;
 
 void IRAM_ATTR ISR_OK() {                 // Interrupt service rutine
   button_time = millis();                 // Ochrona przed tzw. button debounce
-  if (button_time - last_button_time > 150)
+  if (button_time - last_button_time > 200)
   {
     ok_flag = 1;
     last_button_time = button_time;

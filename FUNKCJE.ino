@@ -100,11 +100,3 @@ void wypisz_ekran_startowy(){
   lcd.setCursor(15,0);
   lcd.write(4);
 }
-
-/*void przesuwaj_tekst(char* tekst, int poczatek, int koniec){
-
-  if(tekst.strlen() < koniec - poczatek)
-  {
-
-  }
-}*/

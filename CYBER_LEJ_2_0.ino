@@ -1,13 +1,14 @@
 #include "CYBER_LEJ_2_0.h"
 
-typ_wynik ranking[100] = {{14.53, "Mateusz_M", 9},
-                          {4.37, "Kuba", 4},
-                          {5.84, "Karol", 5},
-                          {6.27, "Kamil", 5},
-                          {6.42, "kto_S", 5},
-                          {112.56, "gosciu", 6},
-                          {11.05, "Jan_Pawel_Adamczewsk", 20},
-                          {12.46, "kolejny_wynik", 6}};
+typ_wynik wyniki[255] = {{8,0},                           // Na miejscu 0 w wynikach jest zapisana ilość wyników aby można było dodać nowy, następny wynik    
+                          {14.53, "Mateusz_M"},           // Nie zmieniając ich kolejności fajnie będzie też zobaczyć historię wyników
+                          {4.37, "Kuba"},
+                          {5.84, "Karol"},
+                          {6.27, "Kamil"},
+                          {6.42, "kto_S"},
+                          {112.56, "gosciu"},
+                          {11.05, "Jan_Pawel_Adamczewsk"},
+                          {12.46, "kolejny_wynik"}};
 
 void setup() {
 
