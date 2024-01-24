@@ -36,7 +36,7 @@ int przesuwanie_nazwy(uint8_t miejsce){
       for(uint8_t i = 0; i < 2; i++){                           // Wypisanie 8 liter z nazwy a jeśli tyle nie ma to w pozostałe miejsca wstawia znak " "
         lcd.setCursor(8, i);
         lcd.print(przes_nazwa[i]);
-        lcd.print("        ");                                   // Usuwa niepotrzebne znaki
+        lcd.print("        ");                                   // Usuwa niepotrzebne znaki za nazwą
       }
       prevTime = currTime;
     }

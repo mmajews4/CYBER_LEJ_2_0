@@ -3,6 +3,7 @@
 
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
+#include <String.h>
 
 #define OK 13                                 // Podmienić na interupty i flagi
 #define RIGHT 14

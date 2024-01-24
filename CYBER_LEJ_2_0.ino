@@ -24,20 +24,20 @@ void loop() {
     wypisz_ekran_startowy();
     if(wybor("pomiar", "ranking", 1, 8, 6, 7, 0)) // ----------------------------------------------------------   R A N K I N G   ----------------
     {
-      uint8_t miejsce = 1;
+      uint8_t miejsce = 1;                        // Zmienna do trzymania wartości miejca wyświetlanego na górze LCD 
 
       while(1)
       {
         wyswietl_ranking(miejsce);
 
-        if(przesuwanie_nazwy(miejsce)) break;
+        if(przesuwanie_nazwy(miejsce)) break;     // ESC z wyswiwtlania rankingu, jeżeli 0 to usuwanie nazwy lub ruch
 
         if(ok_flag){
           ok_flag = 0;
           //usun_wynik();
         }
 
-        ruch_rankingu(&miejsce);
+        ruch_rankingu(&miejsce);                  // 
 
       }
     }

@@ -101,6 +101,10 @@ void wypisz_ekran_startowy(){
   lcd.write(4);
 }
 
-void przesuwaj_nazwe(){
-  
-}
+/*void przesuwaj_tekst(char* tekst, int poczatek, int koniec){
+
+  if(tekst.strlen() < koniec - poczatek)
+  {
+
+  }
+}*/
