@@ -20,25 +20,32 @@ void setup() {
 
 void loop() {
 
+  uint8_t miejsce = 1, idz_do_rankingu = 0;
+
   while(1)                    // Wszystko jest w pętli aby można było wyjść z kodu za pomocą esc
-  {
-    wypisz_ekran_startowy();
-    if(wybor("pomiar", "ranking", 1, 8, 6, 7, 0)) // ----------------------------------------------------------   R A N K I N G   ----------------
+  {                           // ------------------------------------------------------------------------    E K R A N   G L O W N Y   -----------
+    if(!idz_do_rankingu){     // Flaga jest potrzebna aby można było przejść do rankingu po pomiarze
+      wypisz_ekran_startowy();
+      idz_do_rankingu = wybor("pomiar", "ranking", 1, 8, 6, 7, 0);
+      miejsce = 1;                                // Zmienna do trzymania wartości miejca wyświetlanego na górze LCD
+    }
+
+    if(idz_do_rankingu)                           // ----------------------------------------------------------   R A N K I N G   ----------------
     {
-      uint8_t miejsce = 1;                        // Zmienna do trzymania wartości miejca wyświetlanego na górze LCD 
+      idz_do_rankingu = 0;                        // Flaga przejścia do rankingu
 
       while(1)
       {
-        wyswietl_ranking(miejsce);
+        wyswietl_ranking(miejsce);                // Wyświetlenie miejsca i czasu
 
-        if(przesuwanie_nazwy(miejsce)) break;     // ESC z wyswiwtlania rankingu, jeżeli 0 to usuwanie nazwy lub ruch
+        if(przesuwanie_nazwy(miejsce)) break;     // wyświetlenie ESC z wyswiwtlania rankingu, jeżeli 0 to usuwanie nazwy lub ruch
 
         if(ok_flag){
           ok_flag = 0;
-          //usun_wynik();
+          //menu_wynikow_gracza();                  // W nim jest także usuwanie
         }
 
-        ruch_rankingu(&miejsce);                  // 
+        ruch_rankingu(&miejsce);                  // Funkcja do przemieszczania się po rankingu
 
       }
     }
@@ -57,9 +64,9 @@ void loop() {
 
       if(wpisz_nazwe(&temp_wynik)) break;
       
-      zapisz(&temp_wynik);
+      if(zapisz(&temp_wynik, &miejsce)) break;    // Zapisanie wyniku w tablicy wyniki, ustawienie indexu rankingu oraz zapisanie na SD/FLASHu
       
-      
+      idz_do_rankingu = 1;                        // Po pomyślnym zapisaniu, wyświetl wynik w rankingu
     }
   }
 }

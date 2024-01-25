@@ -95,10 +95,17 @@ void ruch_rankingu(uint8_t* miejsce){
     if(ranking_index[*miejsce+5] > 0)
       *miejsce = *miejsce + 5;
   }
+}
+
+/*void usun_wynik(uint16_t *pozycja_wyniku){
 
 }
 
+void menu_wynikow_gracza(){
 
+  //usun_wynik();
+
+}*/
 
 
 

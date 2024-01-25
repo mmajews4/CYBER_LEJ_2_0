@@ -240,42 +240,28 @@ int wpisz_nazwe(typ_wynik* temp_wynik){
   }
 }
 
-void zapisz(typ_wynik* temp_wynik){
+int zapisz(typ_wynik* temp_wynik, uint8_t* miejsce){
 
   uint16_t bufor, wstaw;
   uint16_t ostatni_wynik = wyniki[0].czas + 1;
 
   wyniki[ostatni_wynik].czas = temp_wynik->czas;
   strcpy(wyniki[ostatni_wynik].nazwa, temp_wynik->nazwa);
-  wyniki[0].czas = ostatni_wynik ;
+  wyniki[0].czas = ostatni_wynik;
 
   int i = 0;
   while(temp_wynik->czas > wyniki[ranking_index[i]].czas){        // Dojście wyniku na swoje miejsce
     i++;
-    Serial.println("3");
   }
-  
-  Serial.println("4");
+  *miejsce = i + 1;                                                   // Zapisanie miejsce do na którym wyświetlić ranking
 
   wstaw = ostatni_wynik;
   while(wstaw != 0){
     bufor = ranking_index[i];
     ranking_index[i] = wstaw;
-    wstaw = ranking_index[i+1];
-    Serial.println(wstaw);
+    wstaw = bufor;
     i++;
   }
 
-
-
-
-
-
-  /*Serial.println("Zapisano");
-  Serial.print("Czas: ");
-  Serial.println(temp_wynik->czas);
-  Serial.print("Nazwa: ");
-  Serial.println(temp_wynik->nazwa);
-  Serial.print("Dlugosc nazwy: ");
-  Serial.println(temp_wynik->dlugosc_nazwy);*/
+  return 0;
 }

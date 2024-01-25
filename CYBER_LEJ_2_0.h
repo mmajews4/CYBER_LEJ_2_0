@@ -113,7 +113,7 @@ int zliczanie_czasu(typ_wynik*);
 int czy_zapisac(); 
 void init_klawiatura(char*);
 int wpisz_nazwe(typ_wynik*);
-void zapisz(typ_wynik*);     // nie skończone
+int zapisz(typ_wynik*, uint8_t*);
 
 void wyswietl_ranking(uint8_t);                                                 //    -------------   R A N K I N G   ---------------
 int przesuwanie_nazwy(uint8_t);
