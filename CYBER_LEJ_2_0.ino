@@ -1,14 +1,19 @@
 #include "CYBER_LEJ_2_0.h"
 
-typ_wynik wyniki[255] = {{8,0},                           // Na miejscu 0 w wynikach jest zapisana ilość wyników aby można było dodać nowy, następny wynik    
-                          {14.53, "Mateusz_M"},           // Nie zmieniając ich kolejności fajnie będzie też zobaczyć historię wyników
-                          {4.37, "Kuba"},
-                          {5.84, "Karol"},
-                          {6.27, "Kamil"},
-                          {6.42, "kto_S"},
-                          {112.56, "gosciu"},
-                          {11.05, "Jan_Pawel_Adamczewsk"},
-                          {12.46, "kolejny_wynik"}};
+typ_wynik wyniki[255] = {{13,0},                           // Na miejscu 0 w wynikach jest zapisana ilość wyników aby można było dodać nowy, następny wynik    
+                          {14.532, "Mateusz_M"},            // Nie zmieniając ich kolejności fajnie będzie też zobaczyć historię wyników
+                          {4.376, "Kuba"},
+                          {5.844, "Karol"},
+                          {6.278, "Kamil"},
+                          {6.424, "kto_S"},
+                          {8.845, "Karol"},
+                          {112.567, "gosciu"},
+                          {7.844, "Karol"},
+                          {11.053, "Jan_Pawel_Adamczewsk"},
+                          {12.466, "kolejny_wynik"},
+                          {9.844, "Karol"},
+                          {10.844, "Karol"},
+                          {11.844, "Karol"}};
 
 void setup() {
 
@@ -38,14 +43,14 @@ void loop() {
       {
         wyswietl_ranking(miejsce);                // Wyświetlenie miejsca i czasu
 
-        if(przesuwanie_nazwy(miejsce)) break;     // wyświetlenie ESC z wyswiwtlania rankingu, jeżeli 0 to usuwanie nazwy lub ruch
+        if(przesuwanie_nazwy(ranking_index[miejsce-1], ranking_index[miejsce])) break;     // wyświetlenie ESC z wyswiwtlania rankingu, jeżeli 0 to usuwanie nazwy lub ruch
 
         if(ok_flag){
           ok_flag = 0;
-          //menu_wynikow_gracza();                  // W nim jest także usuwanie
+          menu_wynikow_lejownika(wyniki[ranking_index[miejsce-1]].nazwa, wyniki[ranking_index[miejsce-1]].czas);                  // W nim jest także usuwanie
         }
 
-        ruch_rankingu(&miejsce);                  // Funkcja do przemieszczania się po rankingu
+        ruch_rankingu(&miejsce);                  // Funkcja do przemieszczania się po rankinguS
 
       }
     }

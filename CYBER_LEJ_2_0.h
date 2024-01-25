@@ -25,7 +25,7 @@ typedef struct{
   char nazwa[21];
 } typ_wynik;
 
-uint16_t ranking_index[100] = {2,3,4,5,7,8,1,6};
+uint16_t ranking_index[100] = {2,3,4,5,9,10,1,7};
 
 uint8_t ok_flag = 0, right_flag = 0, down_flag = 0, left_flag = 0, up_flag = 0, esc_flag = 0; //Interrupty
 
@@ -115,9 +115,13 @@ void init_klawiatura(char*);
 int wpisz_nazwe(typ_wynik*);
 int zapisz(typ_wynik*, uint8_t*);
 
-void wyswietl_ranking(uint8_t);                                                 //    -------------   R A N K I N G   ---------------
-int przesuwanie_nazwy(uint8_t);
+void wyswietl_ranking(uint8_t, uint8_t);                                        //    -------------   R A N K I N G   ---------------
+int przesuwanie_nazwy(uint8_t, uint8_t);
 void ruch_rankingu(uint8_t*);
+void ruch_menu_wynikow(char*, uint16_t*, uint16_t*);
+void wyswietl_wyniki(uint16_t, uint16_t);
+void usun_wynik(uint16_t*);
+void menu_wynikow_lejownika(char*, float);
 
 void IRAM_ATTR ISR_OK();                                                        //    ----------   I N T E R R U P T S   ------------
 void IRAM_ATTR ISR_RIGHT();
