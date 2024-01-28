@@ -1,0 +1,41 @@
+[33mcommit 0ef04b4965cc3775490fac99eb74affc3bc32063[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Mateusz Majewski <matimaj2004@gmail.com>
+Date:   Thu Jan 25 20:16:49 2024 +0100
+
+    Gotowe wyświetlanie wyników danego lejownika
+
+[33mcommit 4a0ecd5f07cd3cb2e2f854447d5ec01730a237f7[m
+Author: Mateusz Majewski <matimaj2004@gmail.com>
+Date:   Thu Jan 25 14:25:00 2024 +0100
+
+    Commit przed strukturalną zmianą wyświtlania wyniku w celu wyświatlania wszystkich wyników urzytkownika i usuwaniem
+
+[33mcommit 516516a78bf69205212db3b993dadf5a1c56972c[m
+Author: Mateusz Majewski <matimaj2004@gmail.com>
+Date:   Wed Jan 24 22:58:10 2024 +0100
+
+    Dodano przesuwanie nazwy w rankingu oraz zapis wyniku do rankingu
+
+[33mcommit 1b6f4b75f36fffa2af4696587c50c64b2b9ecae2[m
+Author: Mateusz Majewski <matimaj2004@gmail.com>
+Date:   Wed Jan 24 19:41:27 2024 +0100
+
+    Zapis przed testem przesuwania nazwy na wskaźnikach
+
+[33mcommit a66dfcd4e8d5786d9e95383942bc85a8579ce018[m
+Author: Mateusz Majewski <matimaj2004@gmail.com>
+Date:   Sat Jan 6 21:37:46 2024 +0100
+
+    Zrobione wyswietlanie rankingu bez przesuwania, usuwania i sortowana
+
+[33mcommit 27d4b3f32302e6b23e45fc31160daeca2c009ec6[m
+Author: Mateusz Majewski <matimaj2004@gmail.com>
+Date:   Sat Jan 6 17:29:24 2024 +0100
+
+    Gotowa i przetestowana klawiatura
+
+[33mcommit 44d1710f5aa71e786293e722ae78bb58b455e61d[m
+Author: Mateusz Majewski <matimaj2004@gmail.com>
+Date:   Fri Jan 5 20:24:42 2024 +0100
+
+    Pierwszy commit, dzialajacje, testowane funkcje wyboru oraz pomier bez zapisu

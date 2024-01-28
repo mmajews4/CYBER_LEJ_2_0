@@ -58,6 +58,9 @@ void inicjuj_lcd(){
   lcd.createChar(2, backspace);
   lcd.createChar(3, zapis);
   lcd.createChar(4, lej);
+  lcd.createChar(5, bateria[0]);
+  lcd.createChar(6, bateria[1]);
+  lcd.createChar(7, bateria[2]);
   lcd.clear();
 }
 

@@ -99,4 +99,9 @@ void wypisz_ekran_startowy(){
   lcd.write(4);
   lcd.setCursor(15,0);
   lcd.write(4);
+ // for(int i = 5; i <= 7; i++){
+    lcd.setCursor(14,0);
+    lcd.write(6);
+    //delay(2000);
+  //}
 }

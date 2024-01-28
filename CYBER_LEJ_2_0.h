@@ -25,7 +25,9 @@ typedef struct{
   char nazwa[21];
 } typ_wynik;
 
-uint16_t ranking_index[100] = {2,3,4,5,9,10,1,7};
+uint16_t ranking_index[100] = {2,6,4,5,9,10,1,7};
+
+uint8_t miejsce = 1; // Miejsce na którym wyświetlić ranking
 
 uint8_t ok_flag = 0, right_flag = 0, down_flag = 0, left_flag = 0, up_flag = 0, esc_flag = 0; //Interrupty
 
@@ -100,6 +102,35 @@ byte lej[] = {
   B01000
 };
 
+byte bateria[3][8] ={{
+  B01110,
+  B11011,
+  B10001,
+  B10001,
+  B10001,
+  B10001,
+  B11111,
+  B11111
+},{
+  B01110,
+  B11011,
+  B10001,
+  B10001,
+  B11111,
+  B11111,
+  B11111,
+  B11111
+},{
+  B01110,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111,
+  B11111
+}};
+
 
 int wyswietl_ekran();                                                           //    -------------   F U N K C J E   ---------------
 void wyswietl_wybory(char*, char*, uint8_t, uint8_t);
@@ -113,15 +144,16 @@ int zliczanie_czasu(typ_wynik*);
 int czy_zapisac(); 
 void init_klawiatura(char*);
 int wpisz_nazwe(typ_wynik*);
-int zapisz(typ_wynik*, uint8_t*);
+void wstaw_do_rankingu(uint16_t);
+int zapisz(typ_wynik*);
 
 void wyswietl_ranking(uint8_t, uint8_t);                                        //    -------------   R A N K I N G   ---------------
 int przesuwanie_nazwy(uint8_t, uint8_t);
 void ruch_rankingu(uint8_t*);
 void ruch_menu_wynikow(char*, uint16_t*, uint16_t*);
 void wyswietl_wyniki(uint16_t, uint16_t);
-void usun_wynik(uint16_t*);
-void menu_wynikow_lejownika(char*, float);
+int usun_wynik(uint16_t);
+void menu_wynikow_lejownika(uint16_t);
 
 void IRAM_ATTR ISR_OK();                                                        //    ----------   I N T E R R U P T S   ------------
 void IRAM_ATTR ISR_RIGHT();

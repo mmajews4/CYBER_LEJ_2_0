@@ -121,17 +121,21 @@ void ruch_menu_wynikow(char *nazwa_lejownika, uint16_t *wynik_1, uint16_t *wynik
   if(down_flag){                      // 1 do dołu                                // Sprawdzić co się stanie jak wyjdę poza miejsce 100
     down_flag = 0;
 
-    if(wyniki[i_2].czas != 0) i_2++;  // jeżeli nie jest to ostatni wynik to idź dalej 
+    if(i_2 < wyniki[0].czas) i_2++;  // jeżeli nie jest to ostatni wynik to idź dalej 
 
-    while(strcmp(nazwa_lejownika, wyniki[i_2].nazwa) != 0 && (wyniki[i_2].czas != 0)){  
+    while(strcmp(nazwa_lejownika, wyniki[i_2].nazwa) != 0 && (i_2 <= wyniki[0].czas)){  
       i_2++;                          // Przejście po elementach w dół aż znajdę szukaną nazwę lub skończą mi się nazwy
     }
 
-    if(wyniki[i_2].nazwa != 0)        // Zamiana wyników na jeden dalej
+    if(i_2 <= wyniki[0].czas + 1 && *wynik_2 != i_2)        // Zamiana wyników na jeden dalej, jeżeli nie jesteśmy na końcu + 1 ruch + zabezpieczenie przed pokazaniem dwóch takich samych wyników
     {
       *wynik_1 = *wynik_2;
       *wynik_2 = i_2;
     }
+
+   /* if(*wynik_2 == *wynik_1){
+      *wynik_2 = wyniki[0].czas + 1;  // Ustawienie ostatniego wyniku na nic żeby dało radę usunąć ostatni wynik
+    }*/
   }
 
   if(left_flag){                      // zerowanie flag żeby nie ranking się nie przesuwał po wyjściu z menu lejownika
@@ -177,14 +181,76 @@ void wyswietl_wyniki(uint16_t wynik_1, uint16_t wynik_2){
   lcd.print(bufor);  
 }
 
-void usun_wynik(uint16_t *pozycja_wyniku){
+int usun_wynik(uint16_t pozycja_wyniku){
 
+  uint16_t najlepszy_wynik = wyniki[0].czas + 1;
+  char nazwa[21];
+  
+  lcd.clear();
+  lcd.setCursor(0, 0);                                               
+  lcd.print("  Usunac wynik? ");
+
+  if(wybor("TAK", "NIE", 3, 10, 3, 3, 1))
+  {                      // NIE usuwaj 
+    lcd.clear();  
+    return 0;
+  }                      // TAK usuń
+
+  strcpy(nazwa, wyniki[pozycja_wyniku].nazwa);
+  
+  wyniki[pozycja_wyniku].czas = 0.0;                      // Wyzerowanie wyniku ze spisu wyników
+  wyniki[pozycja_wyniku].nazwa[0] = '\0';                 // Czy wpisanie 0 do stringa da jakiś blad? Nie, jest dobrze
+
+  Serial.print("Nazwa: ");
+  Serial.println(nazwa);
+  Serial.print("Usunięta nazwa: ");
+  Serial.println(wyniki[pozycja_wyniku].nazwa);
+
+  uint16_t i = 0;                                         // Sprawdzenie czy wynik jest w rankingu
+  while(ranking_index[i] != pozycja_wyniku && ranking_index[i] != 0){
+    i++;
+  }
+
+  while(ranking_index[i] != 0){                           // Przesunięcie wszystkich gorszych wyników w góre
+    ranking_index[i] = ranking_index[i+1];
+    i++;
+  }
+
+  // Jeżeli zawodnik ma inne wyniki, wstawienie do rankingu drugiego najlepszego
+
+  for(int k = 1; k <= wyniki[0].czas; k++)                // Przejście po wszystkich wynikach wyszukując tego najlepszego
+  {
+    if(!strcmp(nazwa, wyniki[k].nazwa))                   // Jeżeli znajdzie szukaną nazwe
+    { // To sprawdzi czy jej wynik jest lepszy niż najlepszy dotychczas lub czy nie jest to pierwszy znaleziony wynik
+      Serial.println("Sprawdzam wynik");
+      if(wyniki[k].czas < wyniki[najlepszy_wynik].czas || najlepszy_wynik == wyniki[0].czas + 1)
+      {
+        najlepszy_wynik = k;
+        Serial.print("Najlepszy wynik: ");
+        Serial.println(najlepszy_wynik);
+      }
+    }
+  }
+
+  wstaw_do_rankingu(najlepszy_wynik);
+
+  for(int j = 0; j <= wyniki[0].czas; j++){
+    Serial.print(wyniki[j].czas);
+    Serial.print("       ");
+    Serial.println(wyniki[j].nazwa);
+  }
+
+  down_flag = 1;                      // Zrobienie ruchu w dół aby zakryć miejsce usuniętego wyniku 
+
+  return 1;
 }
 
-void menu_wynikow_lejownika(char *nazwa_lejownika, float czas){
+void menu_wynikow_lejownika(uint16_t miejsce){
 
   uint16_t wynik_1, wynik_2;
   uint16_t i = 1;
+  char *nazwa_lejownika = wyniki[ranking_index[miejsce]].nazwa;
+  float czas = wyniki[ranking_index[miejsce]].czas;
 
   while((czas != wyniki[i].czas) && strcmp(nazwa_lejownika, wyniki[i].nazwa)){    // Przejście do pierwszego wyniku lejownika
     i++;
@@ -203,14 +269,37 @@ void menu_wynikow_lejownika(char *nazwa_lejownika, float czas){
 
     if(przesuwanie_nazwy(wynik_1, wynik_2)) break;                     // wyświetlenie ESC z wyswiwtlania rankingu, jeżeli 0 to usuwanie nazwy lub ruch
 
+    Serial.print(wynik_1);
+    Serial.print("    ");
+    Serial.println(wyniki[wynik_1].nazwa);
+    Serial.print(wynik_2);
+    Serial.print("    ");
+    Serial.println(wyniki[wynik_2].nazwa);
+    Serial.print("Nazwa_lejownika    ");
+    Serial.println(nazwa_lejownika);
+    Serial.println("    ");
+
     if(ok_flag){
       ok_flag = 0;
-      //usun_wynik();                                                  // W nim jest także usuwanie
+      if(usun_wynik(wynik_1)){
+
+        if(wyniki[wynik_2].czas == 0.0){
+          break;    // Jeżeli nie ma już nic do wyświetlenia to wyjdź
+        } 
+       /* else 
+        {
+          
+        }*/
+      }
     }
 
     ruch_menu_wynikow(nazwa_lejownika, &wynik_1, &wynik_2);            // Funkcja do przemieszczania się po rankingu
   }
 }
 
-
+/*   -------------    B U G I    -------------
+- Usuwając pierwszą(lub czasem inną) nazwę usuwa się nazwa lejownika i psuje wyświwietlanie menu
+- Czasem potrafi się nie usunąć miejsce w rankingu z lejownikiem i wyświwtla 0 bez nazwy, ale nadal tworzy się nowe niemiejsce w rankingu innego wyniku lejownika 
+ 
+*/
 

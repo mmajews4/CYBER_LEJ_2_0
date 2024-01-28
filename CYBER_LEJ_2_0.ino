@@ -1,19 +1,20 @@
 #include "CYBER_LEJ_2_0.h"
 
-typ_wynik wyniki[255] = {{13,0},                           // Na miejscu 0 w wynikach jest zapisana ilość wyników aby można było dodać nowy, następny wynik    
-                          {14.532, "Mateusz_M"},            // Nie zmieniając ich kolejności fajnie będzie też zobaczyć historię wyników
+typ_wynik wyniki[255] = {{14,0},                           // Na miejscu 0 w wynikach jest zapisana ilość wyników aby można było dodać nowy, następny wynik    
+                          {14.532, "Mateusz_M"},            // Nie zmieniając ich kolejności fajnie będzie też zobaczyć historię wyników   !!! Jest bug że w tabeli wyników ta nazwa wyswietla się dwa razy
                           {4.376, "Kuba"},
-                          {5.844, "Karol"},
+                          {8.844, "Karol"},
                           {6.278, "Kamil"},
-                          {6.424, "kto_S"},
-                          {8.845, "Karol"},
+                          {6.424, "a"},
+                          {5.845, "Karol"},
                           {112.567, "gosciu"},
                           {7.844, "Karol"},
                           {11.053, "Jan_Pawel_Adamczewsk"},
                           {12.466, "kolejny_wynik"},
                           {9.844, "Karol"},
                           {10.844, "Karol"},
-                          {11.844, "Karol"}};
+                          {11.844, "Karol"},
+                          {7.424, "a"}};
 
 void setup() {
 
@@ -25,7 +26,7 @@ void setup() {
 
 void loop() {
 
-  uint8_t miejsce = 1, idz_do_rankingu = 0;
+  uint8_t idz_do_rankingu = 0;
 
   while(1)                    // Wszystko jest w pętli aby można było wyjść z kodu za pomocą esc
   {                           // ------------------------------------------------------------------------    E K R A N   G L O W N Y   -----------
@@ -47,10 +48,10 @@ void loop() {
 
         if(ok_flag){
           ok_flag = 0;
-          menu_wynikow_lejownika(wyniki[ranking_index[miejsce-1]].nazwa, wyniki[ranking_index[miejsce-1]].czas);                  // W nim jest także usuwanie
+          menu_wynikow_lejownika(miejsce-1);      // W nim jest także usuwanie
         }
 
-        ruch_rankingu(&miejsce);                  // Funkcja do przemieszczania się po rankinguS
+        ruch_rankingu(&miejsce);                  // Funkcja do przemieszczania się po rankingu
 
       }
     }
@@ -65,11 +66,14 @@ void loop() {
       while(!ok_flag && !esc_flag){               // Wyświetlaj wynik dopóki urzytkownik czegoś nie zrobi  
         Serial.println("Czekam z wyswiwtlonym wynikiem");
       }  
+      
       if(czy_zapisac()) break;                    // 1 jeżeli nie chcemy zapisać, wykona się tylko po nacisniecuy ESC
 
       if(wpisz_nazwe(&temp_wynik)) break;
+
+      Serial.println("Zapis");
       
-      if(zapisz(&temp_wynik, &miejsce)) break;    // Zapisanie wyniku w tablicy wyniki, ustawienie indexu rankingu oraz zapisanie na SD/FLASHu
+      if(zapisz(&temp_wynik)) break;    // Zapisanie wyniku w tablicy wyniki, ustawienie indexu rankingu oraz zapisanie na SD/FLASHu
       
       idz_do_rankingu = 1;                        // Po pomyślnym zapisaniu, wyświetl wynik w rankingu
     }
