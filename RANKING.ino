@@ -2,15 +2,18 @@ void wyswietl_ranking(uint8_t miejsce){       // Miejsce, tak jak w rzeczywstoś
 
   for(int i = 0; i < 2; i++)              // Wypisanie miejsca
   { 
-    lcd.setCursor(0, i);
-    lcd.print(miejsce+i);
-    if(miejsce+i < 10)
-      lcd.print(" ");                     // Wypisanie przerw w odpowiednich miejscach
-    lcd.print(" ");
-    lcd.print(wyniki[ranking_index[miejsce-1+i]].czas); // Wypisanie 4 znaków czasu
+    if(ranking_index[miejsce-1+i] != 0){
+      
+      lcd.setCursor(0, i);
+      lcd.print(miejsce+i);
+      if(miejsce+i < 10)
+        lcd.print(" ");                     // Wypisanie przerw w odpowiednich miejscach
+      lcd.print(" ");
+      lcd.print(wyniki[ranking_index[miejsce-1+i]].czas); // Wypisanie 4 znaków czasu
 
-    lcd.setCursor(7, i);
-    lcd.print(" ");
+      lcd.setCursor(7, i);
+      lcd.print(" ");
+    }
   }
 }
 
@@ -190,7 +193,7 @@ int usun_wynik(uint16_t pozycja_wyniku){
   lcd.setCursor(0, 0);                                               
   lcd.print("  Usunac wynik? ");
 
-  if(wybor("TAK", "NIE", 3, 10, 3, 3, 1))
+  if(wybor("TAK", "NIE", 3, 10, 3, 3, 1, 0))
   {                      // NIE usuwaj 
     lcd.clear();  
     return 0;
@@ -200,6 +203,8 @@ int usun_wynik(uint16_t pozycja_wyniku){
   
   wyniki[pozycja_wyniku].czas = 0.0;                      // Wyzerowanie wyniku ze spisu wyników
   wyniki[pozycja_wyniku].nazwa[0] = '\0';                 // Czy wpisanie 0 do stringa da jakiś blad? Nie, jest dobrze
+ 
+  down_flag = 1;                                          // Zrobienie ruchu w dół aby zakryć miejsce usuniętego wyniku 
 
   Serial.print("Nazwa: ");
   Serial.println(nazwa);
@@ -215,6 +220,8 @@ int usun_wynik(uint16_t pozycja_wyniku){
     ranking_index[i] = ranking_index[i+1];
     i++;
   }
+
+  if(ranking_index[i] == 0) return 1;                     // Jeżeli go nie ma w rankingu, usuwanie zakończone
 
   // Jeżeli zawodnik ma inne wyniki, wstawienie do rankingu drugiego najlepszego
 
@@ -240,8 +247,6 @@ int usun_wynik(uint16_t pozycja_wyniku){
     Serial.println(wyniki[j].nazwa);
   }
 
-  down_flag = 1;                      // Zrobienie ruchu w dół aby zakryć miejsce usuniętego wyniku 
-
   return 1;
 }
 
@@ -249,8 +254,9 @@ void menu_wynikow_lejownika(uint16_t miejsce){
 
   uint16_t wynik_1, wynik_2;
   uint16_t i = 1;
-  char *nazwa_lejownika = wyniki[ranking_index[miejsce]].nazwa;
   float czas = wyniki[ranking_index[miejsce]].czas;
+  char nazwa_lejownika[21];
+  strcpy(nazwa_lejownika, wyniki[ranking_index[miejsce]].nazwa);
 
   while((czas != wyniki[i].czas) && strcmp(nazwa_lejownika, wyniki[i].nazwa)){    // Przejście do pierwszego wyniku lejownika
     i++;
@@ -265,6 +271,8 @@ void menu_wynikow_lejownika(uint16_t miejsce){
 
   while(1)
   {
+    sprawdz_naladowanie(0, 0, 0);                                      // Sprawdzenie naladowania baterii
+
     wyswietl_wyniki(wynik_1, wynik_2);                                 // Wyświetlenie czasu z dokładnością do 3 miejsc po przecinku
 
     if(przesuwanie_nazwy(wynik_1, wynik_2)) break;                     // wyświetlenie ESC z wyswiwtlania rankingu, jeżeli 0 to usuwanie nazwy lub ruch
@@ -298,8 +306,7 @@ void menu_wynikow_lejownika(uint16_t miejsce){
 }
 
 /*   -------------    B U G I    -------------
-- Usuwając pierwszą(lub czasem inną) nazwę usuwa się nazwa lejownika i psuje wyświwietlanie menu
-- Czasem potrafi się nie usunąć miejsce w rankingu z lejownikiem i wyświwtla 0 bez nazwy, ale nadal tworzy się nowe niemiejsce w rankingu innego wyniku lejownika 
+- Usuwając wynik który jest pojedynczy dodaje się wynik 0.0
  
 */
 

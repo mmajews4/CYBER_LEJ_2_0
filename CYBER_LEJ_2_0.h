@@ -12,6 +12,7 @@
 #define LEFT 25
 #define ESC 33
 #define VALVE 4
+#define BATTERY 35
 #define CZAS_MIGANIA 550
 #define HISTEREZA_MIGANIA 70
 #define CZAS_PRZES_RANK 200
@@ -28,6 +29,7 @@ typedef struct{
 uint16_t ranking_index[100] = {2,6,4,5,9,10,1,7};
 
 uint8_t miejsce = 1; // Miejsce na którym wyświetlić ranking
+int16_t naladowanie;
 
 uint8_t ok_flag = 0, right_flag = 0, down_flag = 0, left_flag = 0, up_flag = 0, esc_flag = 0; //Interrupty
 
@@ -135,8 +137,10 @@ byte bateria[3][8] ={{
 int wyswietl_ekran();                                                           //    -------------   F U N K C J E   ---------------
 void wyswietl_wybory(char*, char*, uint8_t, uint8_t);
 void zamaluj_wybor(char*, char*, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
-int wybor(char*, char*, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
+int wybor(char*, char*, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 void wypisz_ekran_startowy();
+void wyswietl_naladowanie();
+int sprawdz_naladowanie(uint8_t, uint8_t, uint8_t);
 
 int zawor_otwarty();                                                            //    --------------   P O M I A R   ----------------
 int uwaga_otworzony_zawor();

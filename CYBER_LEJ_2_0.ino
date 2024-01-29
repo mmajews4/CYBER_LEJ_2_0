@@ -32,16 +32,28 @@ void loop() {
   {                           // ------------------------------------------------------------------------    E K R A N   G L O W N Y   -----------
     if(!idz_do_rankingu){     // Flaga jest potrzebna aby można było przejść do rankingu po pomiarze
       wypisz_ekran_startowy();
-      idz_do_rankingu = wybor("pomiar", "ranking", 1, 8, 6, 7, 0);
+      idz_do_rankingu = wybor("pomiar", "ranking", 1, 8, 6, 7, 0, 1);
       miejsce = 1;                                // Zmienna do trzymania wartości miejca wyświetlanego na górze LCD
     }
 
-    if(idz_do_rankingu)                           // ----------------------------------------------------------   R A N K I N G   ----------------
+    if(idz_do_rankingu == 2)                      // -------------------------------------------------------   U S T A W I E N I A   -------------
+    {
+      idz_do_rankingu = 0;
+      lcd.clear();
+
+      lcd.setCursor(0,1);                         // Możliwa przyszła opcja
+      lcd.print("Wifi:X  SD/FLASH");
+
+      wyswietl_naladowanie();
+    }
+    else if(idz_do_rankingu)                      // ----------------------------------------------------------   R A N K I N G   ----------------
     {
       idz_do_rankingu = 0;                        // Flaga przejścia do rankingu
 
       while(1)
       {
+        sprawdz_naladowanie(0, 0, 0);             // Sprawdzenie naladowania baterii
+
         wyswietl_ranking(miejsce);                // Wyświetlenie miejsca i czasu
 
         if(przesuwanie_nazwy(ranking_index[miejsce-1], ranking_index[miejsce])) break;     // wyświetlenie ESC z wyswiwtlania rankingu, jeżeli 0 to usuwanie nazwy lub ruch

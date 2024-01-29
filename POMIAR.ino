@@ -9,12 +9,13 @@ int uwaga_otworzony_zawor(){
   lcd.print("Zawor otwarty");
 
   while(zawor_otwarty()){  
-    if(esc_flag)                 // Wyjście z tego stanu do menu glownego 
+    if(esc_flag)                   // Wyjście z tego stanu do menu glownego 
     {
       esc_flag = 0;
       lcd.clear();
       return 1;
     }
+    sprawdz_naladowanie(0, 0, 0);  // Sprawdzenie naladowania baterii
   }
   lcd.clear();
   return 0;
@@ -87,7 +88,7 @@ int czy_zapisac(){
     lcd.setCursor(0, 0);                                               
     lcd.print("Wyjsc bez zapisu");
 
-    if(wybor("TAK", "NIE", 3, 10, 3, 3, 1))
+    if(wybor("TAK", "NIE", 3, 10, 3, 3, 1, 0))
     {                      // NIE wychodz bez zapisu    
       lcd.clear();                                      
       return 0;   // Zapisz
@@ -127,7 +128,7 @@ int czy_istnieje_taka_nazwa(typ_wynik* temp_wynik){
   lcd.setCursor(1, 0);                                               
   lcd.print("Nazwa istnieje!");
 
-  if(wybor("TO_JA", "ZMIENIAM", 1, 7, 5, 8, 1))
+  if(wybor("TO_JA", "ZMIENIAM", 1, 7, 5, 8, 1, 0))
   {                      // ZMIENIAM - wróć do klawaitury    
     lcd.clear();                                      
     return 0;            // Nie wychodź z klawiatury

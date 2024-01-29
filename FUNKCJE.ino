@@ -41,12 +41,13 @@ void zamaluj_wybor(char* napis_L, char* napis_P, uint8_t odl_L, uint8_t odl_P, u
   }
 }
 
-int wybor(char* napis_L, char* napis_P, uint8_t odl_L, uint8_t odl_P, uint8_t dlg_L, uint8_t dlg_P, uint8_t wybrano){ // napis, odleglosc, dlugosc napisu, domyślny wybor(0,1)
+ // napis, odleglosc, dlugosc napisu, domyślny wybor(0,1), czy akceptuje przejście w górę(w menu glownym)
+int wybor(char* napis_L, char* napis_P, uint8_t odl_L, uint8_t odl_P, uint8_t dlg_L, uint8_t dlg_P, uint8_t wybrano, uint8_t gora){
 
   uint32_t prevTime = 0, currTime;
   uint8_t zamalowane = 0, zmien = 0;
 
-  while(!ok_flag)
+  while(!ok_flag && !(gora && up_flag))
   {
     if(right_flag)              // Zmiana wyboru za pomocą przycsków
     {
@@ -77,6 +78,11 @@ int wybor(char* napis_L, char* napis_P, uint8_t odl_L, uint8_t odl_P, uint8_t dl
       zamalowane = 0;
       zmien = 0;
       prevTime = currTime;
+
+      if(gora){                                                           // Co jakis czas trzeba sprawdzać naladowanie baterii, mysle ze to dobry moment
+        sprawdz_naladowanie(14, 1, 0);
+        wypisz_ekran_startowy();
+      }
     }
 
     if(!zamalowane && (currTime - prevTime > CZAS_MIGANIA + HISTEREZA_MIGANIA || zmien))
@@ -87,9 +93,79 @@ int wybor(char* napis_L, char* napis_P, uint8_t odl_L, uint8_t odl_P, uint8_t dl
       prevTime = currTime;
     }
   }
+
+  if(gora && up_flag)
+  {
+    wybrano = 2;
+  }
   ok_flag = 0;
+  up_flag = 0;
+  down_flag = 0;      // Bo po wyborze zapamiętywało ruch w dół lub górę
   lcd.clear();
   return wybrano;
+}
+
+void wyswietl_naladowanie(){
+
+  int currTime, prevTime = 0;
+
+  
+  while(!esc_flag){
+
+    currTime = millis();
+
+    if(currTime - prevTime > 2000){
+      //Serial.println("Wyswietlam stan naladowania baterii");
+      sprawdz_naladowanie(0, 1, 1);
+      prevTime = currTime;
+    }
+  }
+  esc_flag = 0;
+  lcd.clear();
+}
+
+// Sprawdza stan baterii i go zwraca, wyświetla ikonke bateryjki i w razie potrzeby wyświetla alarm
+int sprawdz_naladowanie(uint8_t pozycja_x, uint8_t czy_wyswietlic, uint8_t czy_procent){                                                      //   ZAPYTAĆ O TĄ FUNKCJĘ CZY DOBRE ZAKRESY
+  
+  naladowanie = map(analogRead(BATTERY), 2000, 4095, 0, 120);  // Do 120 żeby zrekompensować cahrakterystyke Li-Po która szybko spada na początku, później wolniej
+
+  if(naladowanie < 0) naladowanie = 0;                          // zabezpieczenie przed przepełnieniem
+
+  if(naladowanie < 10){
+    lcd.clear();
+    lcd.setCursor(2,0);
+    lcd.print("LOW BATTERY!");
+    lcd.setCursor(7,1);
+    lcd.print(naladowanie);
+    lcd.print("%  ");
+
+    while(!esc_flag){
+      Serial.println("LOW BATTERY");
+    }
+    lcd.clear();
+    esc_flag = 0;
+  }
+
+  if(czy_wyswietlic)                        // Wyswiwetlenie bateryjki
+  {
+    lcd.setCursor(pozycja_x, 0);
+
+    if(naladowanie > 70){                   // Zakres wyswiwtlania ikonki bateryjki
+      lcd.write(7);
+    } else if(naladowanie > 40){
+      lcd.write(6);
+    } else {
+      lcd.write(5);
+    }
+
+    if(czy_procent)                         // Czy wypisać ile bateria ma %
+    {
+      lcd.print(" ");
+      lcd.print(naladowanie);
+      lcd.print("%  ");
+    }
+  }
+  return naladowanie;
 }
 
 void wypisz_ekran_startowy(){
@@ -99,9 +175,5 @@ void wypisz_ekran_startowy(){
   lcd.write(4);
   lcd.setCursor(15,0);
   lcd.write(4);
- // for(int i = 5; i <= 7; i++){
-    lcd.setCursor(14,0);
-    lcd.write(6);
-    //delay(2000);
-  //}
+  Serial.println("wypisanio ekran startowy");
 }
