@@ -264,12 +264,20 @@ int wpisz_nazwe(typ_wynik* temp_wynik){           // zwraca 0 jeśli zapisać, w
       else if(specjalne == 3)                           // Zapisz                                  
       {
         Serial.println("Próba zapisania nazwy");
-        if(czy_istnieje_taka_nazwa(temp_wynik)){
-          Serial.println("Wynonanie funkcji czy istniej taka nazwa, przejście do zapisu");
-          return 0;            // Sprawdzenie czy już jest taka nazwa i czy ją nadpisać czy zmienić obecną nazwę
+        if(temp_wynik->nazwa[0] == '\0'){
+          Serial.println("Nazwa jest pusta");
+          ok_flag = 0;
+        } else {       // Nie wykonanie zapisu jeżeli nie wpisano nazwy
+
+          Serial.println("Nazwa nie jest pusta");
+
+          if(czy_istnieje_taka_nazwa(temp_wynik)){
+            Serial.println("Wynonanie funkcji czy istniej taka nazwa, przejście do zapisu");
+            return 0;                                     // Sprawdzenie czy już jest taka nazwa i czy ją nadpisać czy zmienić obecną nazwę
+          }
+          init_klawiatura(temp_wynik->nazwa);             // Jako że wyczyściliśmy ekran trzeba znowy naryswoać klawiaturę
+          // Wyjście bo następną rzeczą wykonywaną w funkcji main jest funkcja zapisz
         }
-        init_klawiatura(temp_wynik->nazwa); // Jako że wyczyściliśmy ekran trzeba znowy naryswoać klawiaturę
-        // Wyjście bo następną rzeczą wykonywaną w funkcji main jest funkcja zapisz
       }
     }
 

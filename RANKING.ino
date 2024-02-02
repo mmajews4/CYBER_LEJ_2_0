@@ -306,7 +306,16 @@ void menu_wynikow_lejownika(uint16_t miejsce){
 }
 
 /*   -------------    B U G I    -------------
-- Usuwając wynik który jest pojedynczy dodaje się wynik 0.0
+platformio
+
+littlefs      sffs
+zaciągnąć przypadkowe ffs z przykładów arduino
+
+sdfat
+
+tomek lubelski git 02
+
+odseparować klawiaturkę na gita
  
 */
 
