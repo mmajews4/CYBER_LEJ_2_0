@@ -1,3 +1,0 @@
-Testowy plik do odczytu LittleFS
-10.024 Kabanoc
-5.325 Karol

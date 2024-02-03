@@ -1,11 +1,42 @@
-/*
-Pamięć FLASH na ESP32 jest za mała. Jest tam 4096 bit czyli 512 B
-Na takiej ilości miejsca, zakładające że przekowertuje czas z floata na uint16_t z trzema miejscami po przecinku zawsze żeby wiedzić gdzie go dopisać,
-oraz z nazwą praktycznie NIEAKCEPTOWALNIE krótką 8 znaków, 10 B na wpis, mogę pomieścić max 51 wpisów, za mało.
+void inicjuj_LittleFS(){
 
-Próbowałem uruchomić kartę microSD z modułem to tej karty za pomocą przykłądu SDtest ale wyświetla się komunikat Initialization failed...
-Pomyślałem że może yo być wina konwertera logiki 5V na 3V3 ale jak zamontowałem moduł na arduino nie pomogło.
-Zformatowałem kartę na windowsie na FAT32, nie daiła, zformatowałem kartę spocjalnym narzędzem poleconym na forum arduino do FAT16, wykrywa że karta jest w module
-ale nie może odczytać jej pojemnochci ani wpisać czy odczytać czegokolwiek.
+  if(!LITTLEFS.begin(FORMAT_LITTLEFS_IF_FAILED)){
+    Serial.println("LITTLEFS Mount Failed");
+    return;
+  }
+}
 
-*/
+//void zrob_backup()
+
+void zapisz_we_flashu(){
+
+  writeFile(LITTLEFS, "/wyniki.csv", (String(wyniki[0].czas)+ ",0\n").c_str());
+
+  for(int i = 1; i <= wyniki[0].czas; i++)
+  {
+
+    appendFile(LITTLEFS, "/wyniki.csv", (String(wyniki[i].czas)+ ',').c_str());
+    appendFile(LITTLEFS, "/wyniki.csv", (String(wyniki[i].nazwa)+ '\n').c_str());
+
+  }
+
+  readFile(LITTLEFS, "/wyniki.csv");
+  listDir(LITTLEFS, "/", 3);
+
+  //Serial.println(odczyt_wynikow_flash);
+
+/*  listDir(LITTLEFS, "/", 3);
+	writeFile(LITTLEFS, "/hello2.txt", "Hello2");
+	listDir(LITTLEFS, "/", 1);
+	deleteFile(LITTLEFS, "/mydir/hello2.txt");
+	removeDir(LITTLEFS, "/mydir");*/
+/*	listDir(LITTLEFS, "/", 1);
+  writeFile(LITTLEFS, "/hello.txt", "Hello ");
+  appendFile(LITTLEFS, "/hello.txt", "World!\r\n");
+  readFile(LITTLEFS, "/hello.txt");*/
+/*  renameFile(LITTLEFS, "/hello.txt", "/foo.txt");
+  readFile(LITTLEFS, "/foo.txt");
+  deleteFile(LITTLEFS, "/foo.txt");
+  testFileIO(LITTLEFS, "/test.txt");
+  deleteFile(LITTLEFS, "/test.txt");*/
+}

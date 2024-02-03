@@ -4,6 +4,8 @@
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
 #include <String.h>
+#include "FS.h"
+#include <LITTLEFS.h>
 
 #define OK 13                                 // Podmienić na interupty i flagi
 #define RIGHT 14
@@ -18,18 +20,22 @@
 #define CZAS_PRZES_RANK 200
 #define DLG_PRZES_NAZWY 8                   // Długość przesuwanej nazwy
 
+#define FORMAT_LITTLEFS_IF_FAILED false     // Potrzebne do LittleFS gdy jest uruchomione za pierwszym razem
+
 LiquidCrystal_I2C lcd(0x27, 16, 2);         // Set the LCD address to 0x27 for a 16 chars and 2 line display
 //hw_timer_t *tim_cursor = NULL;
 
 typedef struct{
   float czas;
-  char nazwa[21];
+  char nazwa[23]; // zmienic na 21
 } typ_wynik;
 
 uint16_t ranking_index[100] = {2,6,4,5,9,10,1,7};
 
 uint8_t miejsce = 1; // Miejsce na którym wyświetlić ranking
 int16_t naladowanie;
+
+//char odczyt_wynikow_flash[250];
 
 uint8_t ok_flag = 0, right_flag = 0, down_flag = 0, left_flag = 0, up_flag = 0, esc_flag = 0; //Interrupty
 
@@ -167,5 +173,23 @@ void IRAM_ATTR ISR_UP();
 void IRAM_ATTR ISR_ESC();
 void inicjuj_lcd();
 void inicjuj_interrupty();
+
+void test_LittleFS();                                                           //    --------   L I T T L E F S   F U N C   --------
+void listDir(fs::FS, char*, uint8_t);
+void createDir(fs::FS, char*);
+void removeDir(fs::FS, char*);
+void readFile(fs::FS, char*);
+void writeFile(fs::FS, char*, char*);
+void appendFile(fs::FS, char*, char*);
+void renameFile(fs::FS, char*, char*);
+void deleteFile(fs::FS, char*);
+// SPIFFS-like write and delete file, better use #define CONFIG_LITTLEFS_SPIFFS_COMPAT 1
+void writeFile2(fs::FS, char*, char*);
+void deleteFile2(fs::FS, char*);
+void testFileIO(fs::FS, char*);
+
+void inicjuj_LittleFS();                                                        //    --------------   E E P R O M   ---------------
+void zapisz_we_flashu();
+
 
 #endif

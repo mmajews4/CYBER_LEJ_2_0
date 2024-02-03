@@ -21,7 +21,11 @@ void setup() {
   Serial.begin(115200);
   inicjuj_lcd();
   inicjuj_interrupty();
-  
+  inicjuj_LittleFS();
+
+
+  //test_LittleFS();  // Test, usunac później
+  zapisz_we_flashu();
 }
 
 void loop() {
