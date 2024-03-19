@@ -188,6 +188,7 @@ int usun_wynik(uint16_t pozycja_wyniku){
 
   uint16_t najlepszy_wynik = wyniki[0].czas + 1;
   char nazwa[21];
+  uint8_t jest_w_rankingu = 0;
   
   lcd.clear();
   lcd.setCursor(0, 0);                                               
@@ -215,13 +216,14 @@ int usun_wynik(uint16_t pozycja_wyniku){
   while(ranking_index[i] != pozycja_wyniku && ranking_index[i] != 0){
     i++;
   }
+  if(ranking_index[i] != 0) jest_w_rankingu = 1;
 
   while(ranking_index[i] != 0){                           // Przesunięcie wszystkich gorszych wyników w góre
     ranking_index[i] = ranking_index[i+1];
     i++;
   }
 
-  if(ranking_index[i] == 0) return 1;                     // Jeżeli go nie ma w rankingu, usuwanie zakończone
+  if(!jest_w_rankingu) return 1;                     // Jeżeli go nie ma w rankingu, usuwanie zakończone
 
   // Jeżeli zawodnik ma inne wyniki, wstawienie do rankingu drugiego najlepszego
 
@@ -239,7 +241,7 @@ int usun_wynik(uint16_t pozycja_wyniku){
     }
   }
 
-  wstaw_do_rankingu(najlepszy_wynik);
+  if(wyniki[najlepszy_wynik].czas != 0.0) wstaw_do_rankingu(najlepszy_wynik);                 // Jeżeli znalazło inny wynik gracza to wstawia go do rankingu
 
   for(int j = 0; j <= wyniki[0].czas; j++){
     Serial.print(wyniki[j].czas);
@@ -291,6 +293,8 @@ void menu_wynikow_lejownika(uint16_t miejsce){
       ok_flag = 0;
       if(usun_wynik(wynik_1)){
 
+        //zapisz_we_flashu();
+
         if(wyniki[wynik_2].czas == 0.0){
           break;    // Jeżeli nie ma już nic do wyświetlenia to wyjdź
         } 
@@ -306,6 +310,11 @@ void menu_wynikow_lejownika(uint16_t miejsce){
 }
 
 /*   -------------    B U G I    -------------
+Nadal usuwa całą osobę jeżli usunie się jej najlepszy wynik
+
+Jak dwa razy włączę zawór to się zawisza
+Nowy bug, jak po miganiu w pomiarze się zawiesza
+
 platformio
 
 littlefs      sffs
@@ -316,6 +325,23 @@ sdfat
 tomek lubelski git 02
 
 odseparować klawiaturkę na gita
+
+
+funkyjka z tym kodem VVV
+                #ifdef DEBUG 
+
+trace debug inf 
+
+
+coś się zjebało, bugi które znalazłem, naprawiłem i przetestowałem ecześniej znowu się poajawiły
+
+jeżeli uzunę najlepszy wynik gracza to usuwa się cały gracz
+
+
+
+
+
+obudowa Kacper Drążyk
  
 */
 

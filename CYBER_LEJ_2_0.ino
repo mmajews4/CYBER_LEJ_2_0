@@ -19,13 +19,22 @@ typ_wynik wyniki[255] = {{14,0},                           // Na miejscu 0 w wyn
 void setup() {
 
   Serial.begin(115200);
+
+  Serial.println("Program wgrany");
+
   inicjuj_lcd();
   inicjuj_interrupty();
   inicjuj_LittleFS();
 
+  //SD_test();
 
-  //test_LittleFS();  // Test, usunac później
-  zapisz_we_flashu();
+
+  test_LittleFS();  // Test, usunac później
+  //zapisz_we_flashu();
+  //readFile(LITTLEFS, "/wyniki.csv");
+  //readFile(LITTLEFS, "/ranking.txt");
+  //czytaj_z_flashu();
+  
 }
 
 void loop() {
@@ -45,10 +54,10 @@ void loop() {
       idz_do_rankingu = 0;
       lcd.clear();
 
-      lcd.setCursor(0,1);                         // Możliwa przyszła opcja
-      lcd.print("Wifi:X  SD/FLASH");
+      //lcd.setCursor(0,1);                         // Możliwa przyszła opcja
+      //lcd.print("Wifi:X  SD/FLASH");
 
-      wyswietl_naladowanie();
+      wyswietl_ustawienia();
     }
     else if(idz_do_rankingu)                      // ----------------------------------------------------------   R A N K I N G   ----------------
     {
@@ -80,7 +89,7 @@ void loop() {
       if(zliczanie_czasu(&temp_wynik)) break;     // Zliczenie czasu, z możliwością wyjścia przed otwarciem zaworu
 
       while(!ok_flag && !esc_flag){               // Wyświetlaj wynik dopóki urzytkownik czegoś nie zrobi  
-        Serial.println("Czekam z wyswiwtlonym wynikiem");
+        //Serial.println("Czekam z wyswiwtlonym wynikiem");
       }  
       
       if(czy_zapisac()) break;                    // 1 jeżeli nie chcemy zapisać, wykona się tylko po nacisniecuy ESC
@@ -90,6 +99,8 @@ void loop() {
       Serial.println("Zapis");
       
       if(zapisz(&temp_wynik)) break;    // Zapisanie wyniku w tablicy wyniki, ustawienie indexu rankingu oraz zapisanie na SD/FLASHu
+
+      //zapisz_we_flashu();
       
       idz_do_rankingu = 1;                        // Po pomyślnym zapisaniu, wyświetl wynik w rankingu
     }

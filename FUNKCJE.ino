@@ -41,13 +41,13 @@ void zamaluj_wybor(char* napis_L, char* napis_P, uint8_t odl_L, uint8_t odl_P, u
   }
 }
 
- // napis, odleglosc, dlugosc napisu, domyślny wybor(0,1), czy akceptuje przejście w górę(w menu glownym)
-int wybor(char* napis_L, char* napis_P, uint8_t odl_L, uint8_t odl_P, uint8_t dlg_L, uint8_t dlg_P, uint8_t wybrano, uint8_t gora){
+ // napis, odleglosc, dlugosc napisu, domyślny wybor(0,1), funkcje wyswietlania baterii w różnych menu
+int wybor(char* napis_L, char* napis_P, uint8_t odl_L, uint8_t odl_P, uint8_t dlg_L, uint8_t dlg_P, uint8_t wybrano, uint8_t bateria){
 
   uint32_t prevTime = 0, currTime;
   uint8_t zamalowane = 0, zmien = 0;
 
-  while(!ok_flag && !(gora && up_flag))
+  while(!ok_flag && !(bateria == 1 && up_flag) && !(bateria == 2 && esc_flag))
   {
     if(right_flag)              // Zmiana wyboru za pomocą przycsków
     {
@@ -79,9 +79,11 @@ int wybor(char* napis_L, char* napis_P, uint8_t odl_L, uint8_t odl_P, uint8_t dl
       zmien = 0;
       prevTime = currTime;
 
-      if(gora){                                                           // Co jakis czas trzeba sprawdzać naladowanie baterii, mysle ze to dobry moment
+      if(bateria == 1){                                                           // Co jakis czas trzeba sprawdzać naladowanie baterii, mysle ze to dobry moment
         sprawdz_naladowanie(14, 1, 0);
         wypisz_ekran_startowy();
+      } else if(bateria == 2){
+        sprawdz_naladowanie(0, 1, 1);
       }
     }
 
@@ -94,7 +96,11 @@ int wybor(char* napis_L, char* napis_P, uint8_t odl_L, uint8_t odl_P, uint8_t dl
     }
   }
 
-  if(gora && up_flag)
+  if(bateria == 1 && up_flag) // Jeżeli jesteśmy w pierwszym trybie pokazywania baterii czyli w menu glownym to po naciśnięciu klawisza w góre idziemy do ustawień
+  {
+    wybrano = 2;
+  }
+  if(bateria == 2 && esc_flag) // Jeżeli jesteśmy w drugim trybie pokazywania baterii czyli w ustawieniach to powinnyiśmy móc z nich wyjść
   {
     wybrano = 2;
   }
@@ -105,9 +111,9 @@ int wybor(char* napis_L, char* napis_P, uint8_t odl_L, uint8_t odl_P, uint8_t dl
   return wybrano;
 }
 
-void wyswietl_naladowanie(){
+void wyswietl_ustawienia(){
 
-  int currTime, prevTime = 0;
+  /*int currTime, prevTime = 0;
 
   
   while(!esc_flag){
@@ -121,7 +127,68 @@ void wyswietl_naladowanie(){
     }
   }
   esc_flag = 0;
+  lcd.clear();*/
+
+  uint8_t opcja = 0;
+
+  while(!esc_flag){
+
+    if(czytaj_z_SD && czytaj_z_flash && !wifi_on)                         // Wyswietlenie każdej możiwej kombinacji opcji i czym skutkuje naciśnięcie na nią
+    {
+      opcja = wybor("Wifi:OF", "SD/FLASH", 0, 8, 7, 8, opcja, 2);
+      
+      if(opcja == 0) wifi_on = 1; 
+      else if(opcja == 1) czytaj_z_flash = 0;
+
+    }
+    else if(!czytaj_z_SD && czytaj_z_flash && !wifi_on)
+    {
+      opcja = wybor("Wifi:OFF", "FLASH", 0, 10, 8, 5, opcja, 2);
+      
+      if(opcja == 0) wifi_on = 1; 
+      else if(opcja == 1) czytaj_z_SD = 1;
+
+    }
+    else if(czytaj_z_SD && !czytaj_z_flash && !wifi_on)
+    {
+      opcja = wybor("Wifi:OFF", "SD", 0, 11, 8, 2, opcja, 2);
+      
+      if(opcja == 0) wifi_on = 1; 
+      else if(opcja == 1){
+        czytaj_z_SD = 0;
+        czytaj_z_flash = 1;
+      }
+    }
+    else if(czytaj_z_SD && czytaj_z_flash && wifi_on)                         // Wyswietlenie każdej możiwej kombinacji opcji i czym skutkuje naciśnięcie na nią
+    {
+      opcja = wybor("Wifi:ON", "SD/FLASH", 0, 8, 7, 8, opcja, 2);
+      
+      if(opcja == 0) wifi_on = 0; 
+      else if(opcja == 1) czytaj_z_flash = 0;
+
+    }
+    else if(!czytaj_z_SD && czytaj_z_flash && wifi_on)
+    {
+      opcja = wybor("Wifi:ON", "FLASH", 0, 10, 7, 5, opcja, 2);
+      
+      if(opcja == 0) wifi_on = 0; 
+      else if(opcja == 1) czytaj_z_SD = 1;
+
+    }
+    else if(czytaj_z_SD && !czytaj_z_flash && wifi_on)
+    {
+      opcja = wybor("Wifi:ON", "SD", 0, 11, 7, 2, opcja, 2);
+      
+      if(opcja == 0) wifi_on = 0; 
+      else if(opcja == 1){
+        czytaj_z_SD = 0;
+        czytaj_z_flash = 1;
+      }
+    }
+  }
+  esc_flag = 0;
   lcd.clear();
+
 }
 
 // Sprawdza stan baterii i go zwraca, wyświetla ikonke bateryjki i w razie potrzeby wyświetla alarm
@@ -175,5 +242,5 @@ void wypisz_ekran_startowy(){
   lcd.write(4);
   lcd.setCursor(15,0);
   lcd.write(4);
-  Serial.println("wypisanio ekran startowy");
+  //Serial.println("wypisanio ekran startowy");
 }

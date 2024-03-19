@@ -359,4 +359,8 @@ void wstaw_do_rankingu(uint16_t wstawiany_wynik){
       i++;
     }
   }
+
+  for(int j = 0; ranking_index[j] != 0; j++){
+    Serial.println(ranking_index[j]);
+  }
 }

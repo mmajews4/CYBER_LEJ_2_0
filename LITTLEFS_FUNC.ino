@@ -81,30 +81,9 @@ void readFile(fs::FS &fs, const char * path){
 
     Serial.println("- read from file:");
     
-    /*while(file.available()){                    // Wypisanie zawartości pliku od razu na ekran
+    while(file.available()){                    // Wypisanie zawartości pliku od razu na ekran
       Serial.write(file.read());
-    }*/
-
-    /*int bytesRead;                              // Wczytanie pliku do zmiennej
-    bytesRead = file.readBytes(odczyt_wynikow_flash, sizeof(odczyt_wynikow_flash) - 1);  // -1 to leave space for null terminator
-    odczyt_wynikow_flash[bytesRead] = '\0';  // Null-terminate the string
-    */
-
-  int lineCount = 0;                              // Wczytenie pliku od razu do tablicy wyników
-  char bufor[8] = "";
-  char* endptr;
-
-  while (lineCount <= wyniki[0].czas && file.available()) {                    
-
-    String line = file.readStringUntil(',');                                        // Czytam część przed przecinkiem, zamieniam ją na float i wpisuję do czasu
-    line.toCharArray(bufor, sizeof(bufor));
-    wyniki[lineCount].czas = strtof(bufor, &endptr);
-
-    String line2 = file.readStringUntil('\n');
-    line2.toCharArray(wyniki[lineCount].nazwa, sizeof(wyniki[lineCount].nazwa));
-
-    lineCount++;
-  }
+    }
 
     file.close();
 }
@@ -295,12 +274,12 @@ void test_LittleFS(){
     deleteFile2(LITTLEFS, "/new1/new2/new3/hello3.txt");
     
     listDir(LITTLEFS, "/", 3);
-	createDir(LITTLEFS, "/mydir");
-	writeFile(LITTLEFS, "/mydir/hello2.txt", "Hello2");
-	listDir(LITTLEFS, "/", 1);
-	deleteFile(LITTLEFS, "/mydir/hello2.txt");
-	removeDir(LITTLEFS, "/mydir");
-	listDir(LITTLEFS, "/", 1);
+    createDir(LITTLEFS, "/mydir");
+    writeFile(LITTLEFS, "/mydir/hello2.txt", "Hello2");
+    listDir(LITTLEFS, "/", 1);
+    deleteFile(LITTLEFS, "/mydir/hello2.txt");
+    removeDir(LITTLEFS, "/mydir");
+    listDir(LITTLEFS, "/", 1);
     writeFile(LITTLEFS, "/hello.txt", "Hello ");
     appendFile(LITTLEFS, "/hello.txt", "World!\r\n");
     readFile(LITTLEFS, "/hello.txt");

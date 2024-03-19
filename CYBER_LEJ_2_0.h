@@ -4,8 +4,12 @@
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
 #include <String.h>
+#include <stdlib.h>
 #include "FS.h"
 #include <LITTLEFS.h>
+#include "SdFat.h"
+#include "sdios.h"
+#include "SD.h"
 
 #define OK 13                                 // Podmienić na interupty i flagi
 #define RIGHT 14
@@ -34,6 +38,8 @@ uint16_t ranking_index[100] = {2,6,4,5,9,10,1,7};
 
 uint8_t miejsce = 1; // Miejsce na którym wyświetlić ranking
 int16_t naladowanie;
+
+uint8_t czytaj_z_SD = 0, czytaj_z_flash = 1, wifi_on = 0;
 
 //char odczyt_wynikow_flash[250];
 
@@ -145,7 +151,7 @@ void wyswietl_wybory(char*, char*, uint8_t, uint8_t);
 void zamaluj_wybor(char*, char*, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 int wybor(char*, char*, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 void wypisz_ekran_startowy();
-void wyswietl_naladowanie();
+void wyswietl_ustawienia();
 int sprawdz_naladowanie(uint8_t, uint8_t, uint8_t);
 
 int zawor_otwarty();                                                            //    --------------   P O M I A R   ----------------
@@ -174,7 +180,7 @@ void IRAM_ATTR ISR_ESC();
 void inicjuj_lcd();
 void inicjuj_interrupty();
 
-void test_LittleFS();                                                           //    --------   L I T T L E F S   F U N C   --------
+/*void test_LittleFS();                                                           //    --------   L I T T L E F S   F U N C   --------
 void listDir(fs::FS, char*, uint8_t);
 void createDir(fs::FS, char*);
 void removeDir(fs::FS, char*);
@@ -190,6 +196,9 @@ void testFileIO(fs::FS, char*);
 
 void inicjuj_LittleFS();                                                        //    --------------   E E P R O M   ---------------
 void zapisz_we_flashu();
+void czytaj_z_flashu();
 
+void SD_test();                                                                 //    ------------------   S D  --------------------
+*/
 
 #endif
